@@ -1,0 +1,257 @@
+/* ---------- Variables ---------- */
+:root {
+  --fondo: #f4f4f9;
+  --tarjeta: #ffffff;
+  --texto: #333333;
+  --acento: #1f3a5f;          /* azul marino */
+  --acento-texto: #ffffff;
+  --oscuro: #1c2530;          /* tarjeta SENAPRED */
+  --placeholder: #dfe3ea;
+  --radio: 12px;
+  --sombra: 0 2px 8px rgba(0, 0, 0, 0.07);
+  --alto-header: 56px;
+  --fuente: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--fuente);
+  background: var(--fondo);
+  color: var(--texto);
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button { font-family: inherit; cursor: pointer; }
+
+:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+
+/* ---------- Header fijo ---------- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: var(--alto-header);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tarjeta);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+}
+
+.header h1 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--acento);
+  padding: 0 15px;
+  text-align: center;
+}
+
+/* ---------- Vistas (SPA) ---------- */
+.vista {
+  display: none;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 20px 15px 40px;
+}
+
+.vista.activa {
+  display: block;
+  animation: fade-in 0.3s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.titulo-vista {
+  font-size: 1.3rem;
+  color: var(--acento);
+  margin: 6px 0 15px;
+}
+
+.subtitulo {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 25px 0 15px;
+}
+
+/* ---------- Vista 1: Dashboard ---------- */
+.tarjeta-senapred {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 20px;
+  border: 0;
+  border-radius: var(--radio);
+  background: var(--oscuro);
+  color: #ffffff;
+  text-align: left;
+  box-shadow: var(--sombra);
+}
+
+.senapred-titulo { font-size: 1.15rem; font-weight: 700; }
+.senapred-sub    { font-size: 0.9rem; opacity: 0.85; }
+
+.grid-regiones {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.tarjeta-region {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 96px;
+  padding: 20px 15px;
+  border: 0;
+  border-top: 4px solid var(--acento);
+  border-radius: var(--radio);
+  background: var(--tarjeta);
+  color: var(--texto);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: var(--sombra);
+}
+
+.tarjeta-region:active,
+.tarjeta-senapred:active,
+.boton-accion:active { opacity: 0.85; }
+
+.mensaje-error {
+  grid-column: 1 / -1;
+  padding: 20px;
+  border-radius: var(--radio);
+  background: var(--tarjeta);
+  box-shadow: var(--sombra);
+}
+
+/* ---------- Botón Volver (fijo bajo el header) ---------- */
+.barra-volver {
+  position: sticky;
+  top: var(--alto-header);
+  z-index: 10;
+  margin: 0 -15px;
+  padding: 10px 15px;
+  background: var(--fondo);
+}
+
+.boton-volver {
+  width: 100%;
+  padding: 14px 20px;
+  border: 2px solid var(--acento);
+  border-radius: var(--radio);
+  background: var(--tarjeta);
+  color: var(--acento);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* ---------- Vista 2: Detalle de región ---------- */
+.marco-imagen {
+  position: relative;
+  width: 100%;
+  padding-top: 62%;            /* proporción fija, compatible con WebViews antiguos */
+  border-radius: var(--radio);
+  background: var(--placeholder);
+  overflow: hidden;
+}
+
+.marco-imagen img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.texto-region {
+  margin: 20px 0;
+  padding: 20px;
+  border-radius: var(--radio);
+  background: var(--tarjeta);
+  box-shadow: var(--sombra);
+  line-height: 1.6;
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+.boton-accion {
+  display: block;
+  width: 100%;
+  min-height: 68px;
+  padding: 18px 20px;
+  border: 0;
+  border-radius: var(--radio);
+  background: var(--acento);
+  color: var(--acento-texto);
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: var(--sombra);
+}
+
+/* ---------- Vista 3: Protocolos (acordeones) ---------- */
+.intro-protocolos { line-height: 1.6; margin-bottom: 20px; }
+
+.acordeon {
+  margin-bottom: 12px;
+  border-radius: var(--radio);
+  background: var(--tarjeta);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+
+.acordeon summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 18px 20px;
+  font-weight: 600;
+  list-style: none;
+  cursor: pointer;
+}
+
+.acordeon summary::-webkit-details-marker { display: none; }
+
+.acordeon summary::after {
+  content: "+";
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--acento);
+}
+
+.acordeon[open] summary::after { content: "\2212"; }
+
+.acordeon[open] .pasos { animation: fade-in 0.3s ease; }
+
+.pasos {
+  padding: 0 20px 12px 42px;
+  line-height: 1.6;
+}
+
+.pasos li { margin-bottom: 10px; }
+
+.nota-emergencias {
+  margin-top: 20px;
+  padding: 18px 20px;
+  border-radius: var(--radio);
+  background: var(--oscuro);
+  color: #ffffff;
+  font-weight: 600;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vista.activa, .acordeon[open] .pasos { animation: none; }
+}

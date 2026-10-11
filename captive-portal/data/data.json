@@ -1,0 +1,14 @@
+[
+  {
+    "id": "biobio",
+    "nombre": "Región del Biobío",
+    "imagen": "biobio_mapa.webp",
+    "texto": "En la Región del Biobío, los riesgos naturales más críticos son los terremotos y tsunamis. El desastre más devastador del registro reciente fue el megaterremoto y tsunami del 27 de febrero de 2010. Este evento catastrófico generó olas que arrasaron localidades enteras como Dichato y Talcahuano. Las consecuencias incluyeron la lamentable pérdida de vidas, el colapso masivo de viviendas, la destrucción portuaria y el aislamiento de comunidades, obligando a reestructurar las rutas de evacuación."
+  },
+  {
+    "id": "prueba",
+    "nombre": "Región de Prueba",
+    "imagen": "prueba_mapa.webp",
+    "texto": "Este es un texto de prueba para verificar que la cuadrícula y la vista de detalle se renderizan correctamente. Reemplaza este objeto por los datos reales de la región, manteniendo los mismos campos: id, nombre, imagen y texto. Si el archivo de imagen no existe, la aplicación muestra un marco gris en su lugar y el resto de la vista sigue funcionando con normalidad."
+  }
+]
