@@ -2,13 +2,15 @@
   {
     "id": "biobio",
     "nombre": "Región del Biobío",
-    "imagen": "biobio_mapa.webp",
-    "texto": "En la Región del Biobío, los riesgos naturales más críticos son los terremotos y tsunamis. El desastre más devastador del registro reciente fue el megaterremoto y tsunami del 27 de febrero de 2010. Este evento catastrófico generó olas que arrasaron localidades enteras como Dichato y Talcahuano. Las consecuencias incluyeron la lamentable pérdida de vidas, el colapso masivo de viviendas, la destrucción portuaria y el aislamiento de comunidades, obligando a reestructurar las rutas de evacuación."
+    "fotos": ["biobio_1.webp", "biobio_2.webp", "biobio_3.webp"],
+    "texto": "En la Región del Biobío, los riesgos naturales más críticos son los terremotos y tsunamis. El desastre más devastador del registro reciente fue el megaterremoto y tsunami del 27 de febrero de 2010. Este evento catastrófico generó olas que arrasaron localidades enteras como Dichato y Talcahuano. Las consecuencias incluyeron la lamentable pérdida de vidas, el colapso masivo de viviendas, la destrucción portuaria y el aislamiento de comunidades, obligando a reestructurar las rutas de evacuación. Hoy, la preparación comunitaria se apoya en la señalética de evacuación y en los simulacros periódicos.",
+    "riesgos": ["sismos", "tsunami", "incendios", "inundaciones", "deslizamiento"]
   },
   {
     "id": "prueba",
     "nombre": "Región de Prueba",
-    "imagen": "prueba_mapa.webp",
-    "texto": "Este es un texto de prueba para verificar que la cuadrícula y la vista de detalle se renderizan correctamente. Reemplaza este objeto por los datos reales de la región, manteniendo los mismos campos: id, nombre, imagen y texto. Si el archivo de imagen no existe, la aplicación muestra un marco gris en su lugar y el resto de la vista sigue funcionando con normalidad."
+    "fotos": ["prueba_1.webp", "prueba_2.webp", "prueba_3.webp"],
+    "texto": "Este es un texto de prueba para verificar que la vista de detalle se renderiza correctamente en pantallas pequeñas. Aquí debe ir una descripción de aproximadamente cien palabras sobre los riesgos naturales de la región, los eventos más relevantes de su historia reciente y las medidas que la comunidad puede adoptar. El párrafo se muestra con interlineado amplio y márgenes generosos para facilitar la lectura desde el celular. Las fotos, los iconos de riesgo y el botón de protocolos de emergencia se generan a partir de los campos de este objeto, de modo que basta con editar el archivo para actualizar el contenido.",
+    "riesgos": ["sismos", "tormenta_polvo", "calor_intenso", "heladas", "tornados", "frio_extremo"]
   }
 ]
