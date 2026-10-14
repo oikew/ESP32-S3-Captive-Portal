@@ -1,23 +1,23 @@
 'use strict';
 
 /* ==========================================================
-   Diccionario de riesgos naturales (clave = valor en "riesgos" del JSON)
-   emoji: texto nativo | img: icono .webp propio (se crea con loading="lazy")
+   Diccionario de riesgos (clave = valor en "riesgos" del JSON)
+   icono: emoji nativo o etiqueta <img> local (con loading="lazy")
    ========================================================== */
-const RIESGOS = {
-  calor_intenso:         { nombre: 'Calor intenso',         emoji: '🌞' },
-  deslizamiento:         { nombre: 'Deslizamiento',         emoji: '🪨' },
-  erupciones_volcanicas: { nombre: 'Erupciones volcánicas', emoji: '🌋' },
-  tsunami:               { nombre: 'Tsunami',               emoji: '🌊' },
-  heladas:               { nombre: 'Heladas',               emoji: '🧊' },
-  incendios:             { nombre: 'Incendios',             emoji: '🔥' },
-  inundaciones:          { nombre: 'Inundaciones',          emoji: '🌧️' },
-  nevadas:               { nombre: 'Nevadas',               emoji: '❄️' },
-  sismos:                { nombre: 'Sismos',                img: 'sismo-icon.webp', alt: 'Sismos' },
-  tornados:              { nombre: 'Tornados',              emoji: '🌪️' },
-  tormenta_electrica:    { nombre: 'Tormenta eléctrica',    emoji: '🌩️' },
-  frio_extremo:          { nombre: 'Frío extremo',          emoji: '🥶' },
-  tormenta_polvo:        { nombre: 'Tormenta de polvo',     img: 'polvo-icon.webp', alt: 'Polvo' }
+const RIESGOS_CONFIG = {
+  "calor_intenso": { nombre: "Calor Intenso", icono: "🌞" },
+  "deslizamiento": { nombre: "Deslizamiento", icono: "🪨" },
+  "erupciones": { nombre: "Erupciones Volcánicas", icono: "🌋" },
+  "tsunami": { nombre: "Tsunami", icono: "🌊" },
+  "heladas": { nombre: "Heladas", icono: "🧊" },
+  "incendios": { nombre: "Incendios", icono: "🔥" },
+  "inundaciones": { nombre: "Inundaciones", icono: "🌧️" },
+  "nevadas": { nombre: "Nevadas", icono: "❄️" },
+  "sismos": { nombre: "Sismos", icono: '<img src="sismo-icon.webp" class="custom-emoji" alt="Sismos" loading="lazy">' },
+  "tornados": { nombre: "Tornados", icono: "🌪️" },
+  "tormenta_electrica": { nombre: "Tormenta Eléctrica", icono: "🌩️" },
+  "frio_extremo": { nombre: "Frío Extremo", icono: "🥶" },
+  "tormenta_polvo": { nombre: "Tormenta de Polvo", icono: '<img src="polvo-icon.webp" class="custom-emoji" alt="Tormenta de Polvo" loading="lazy">' }
 };
 
 const UI = {
@@ -28,7 +28,7 @@ const UI = {
   volverMapa: '← Volver al mapa nacional',
   botonProtocolos: '⚠️ Ver Protocolos de Emergencia de la Zona',
   errorCarga: 'No se pudo cargar la información de las regiones. Recarga la página para intentarlo de nuevo.',
-  altImagen: 'Imagen de '
+  altImagen: 'Mapa satelital de '
 };
 
 /* ==========================================================
@@ -64,22 +64,21 @@ function mostrarVista(nombre) {
   window.scrollTo(0, 0);
 }
 
-/* Icono de un riesgo: emoji nativo o <img class="custom-emoji" loading="lazy"> */
+/* Icono de un riesgo: emoji nativo (texto) o <img> local definido en RIESGOS_CONFIG */
 function crearIcono(clave) {
-  const r = RIESGOS[clave];
-  if (!r) return null;
-  if (r.img) {
-    const img = document.createElement('img');
-    img.setAttribute('loading', 'lazy');   // siempre antes de asignar src
-    img.className = 'custom-emoji';
-    img.alt = r.alt;
-    img.addEventListener('error', function () { img.remove(); });
-    img.src = r.img;
-    return img;
-  }
-  const s = el('span', '', r.emoji);
+  const cfg = RIESGOS_CONFIG[clave];
+  if (!cfg) return null;
+  const s = el('span', 'icono');
   s.setAttribute('role', 'img');
-  s.setAttribute('aria-label', r.nombre);
+  s.setAttribute('aria-label', cfg.nombre);
+  if (cfg.icono.charAt(0) === '<') {
+    s.innerHTML = cfg.icono;   // constante interna (no viene del usuario); el <img> ya incluye loading="lazy"
+    s.querySelectorAll('img').forEach(function (img) {
+      img.addEventListener('error', function () { img.remove(); });
+    });
+  } else {
+    s.textContent = cfg.icono;
+  }
   return s;
 }
 
@@ -92,7 +91,7 @@ function crearFilaRiesgos(claves, conEtiqueta) {
     if (!conEtiqueta) { fila.appendChild(icono); return; }
     const chip = el('span', 'chip-riesgo');
     chip.appendChild(icono);
-    chip.appendChild(el('span', '', RIESGOS[clave].nombre));
+    chip.appendChild(el('span', '', RIESGOS_CONFIG[clave].nombre));
     fila.appendChild(chip);
   });
   return fila;
@@ -139,21 +138,14 @@ function abrirRegion(region) {
 
   vista.appendChild(el('h2', 'titulo-vista', region.nombre));
 
-  // Galería de fotos (scroll horizontal con snap), todas con lazy loading
-  const fotos = region.fotos || [];
-  const galeria = el('div', 'galeria');
-  fotos.forEach(function (ruta, i) {
-    const marco = el('div', 'marco-imagen');
-    const img = document.createElement('img');
-    img.setAttribute('loading', 'lazy');
-    img.setAttribute('decoding', 'async');
-    img.alt = UI.altImagen + region.nombre + ' (' + (i + 1) + ' de ' + fotos.length + ')';
-    img.addEventListener('error', function () { img.remove(); });  // si falta el archivo queda el marco gris
-    img.src = ruta;
-    marco.appendChild(img);
-    galeria.appendChild(marco);
-  });
-  if (fotos.length) vista.appendChild(galeria);
+  // Imagen única (mapa satelital) con lazy loading
+  const img = document.createElement('img');
+  img.setAttribute('loading', 'lazy');   // antes de asignar src
+  img.className = 'mapa-satelital';
+  img.alt = UI.altImagen + region.nombre;
+  img.addEventListener('error', function () { console.warn('Imagen no encontrada: ' + region.imagen); img.remove(); });
+  img.src = region.imagen;
+  vista.appendChild(img);
 
   vista.appendChild(crearFilaRiesgos(region.riesgos, true));
   vista.appendChild(el('p', 'texto-region', region.texto));

@@ -1,16 +1,191 @@
 [
   {
-    "id": "biobio",
-    "nombre": "Región del Biobío",
-    "fotos": ["biobio_1.webp", "biobio_2.webp", "biobio_3.webp"],
-    "texto": "En la Región del Biobío, los riesgos naturales más críticos son los terremotos y tsunamis. El desastre más devastador del registro reciente fue el megaterremoto y tsunami del 27 de febrero de 2010. Este evento catastrófico generó olas que arrasaron localidades enteras como Dichato y Talcahuano. Las consecuencias incluyeron la lamentable pérdida de vidas, el colapso masivo de viviendas, la destrucción portuaria y el aislamiento de comunidades, obligando a reestructurar las rutas de evacuación. Hoy, la preparación comunitaria se apoya en la señalética de evacuación y en los simulacros periódicos.",
-    "riesgos": ["sismos", "tsunami", "incendios", "inundaciones", "deslizamiento"]
+    "id": "01_arica",
+    "nombre": "Región de Arica y Parinacota",
+    "imagen": "01_arica.webp",
+    "texto": "La Región de Arica y Parinacota se ubica sobre una zona de subducción muy activa, donde los sismos de gran magnitud y los tsunamis son la principal amenaza. El terremoto y maremoto de 1868 destruyó gran parte de la ciudad de Arica, y su memoria sigue guiando los planes de evacuación costera. En el altiplano, las lluvias de verano pueden provocar crecidas repentinas de quebradas y ríos que cortan caminos y aíslan poblados, mientras que en invierno las noches presentan heladas intensas. La altura y el aislamiento de muchas comunidades hacen que la preparación local sea fundamental.",
+    "riesgos": [
+      "sismos",
+      "tsunami",
+      "inundaciones",
+      "heladas"
+    ]
   },
   {
-    "id": "prueba",
-    "nombre": "Región de Prueba",
-    "fotos": ["prueba_1.webp", "prueba_2.webp", "prueba_3.webp"],
-    "texto": "Este es un texto de prueba para verificar que la vista de detalle se renderiza correctamente en pantallas pequeñas. Aquí debe ir una descripción de aproximadamente cien palabras sobre los riesgos naturales de la región, los eventos más relevantes de su historia reciente y las medidas que la comunidad puede adoptar. El párrafo se muestra con interlineado amplio y márgenes generosos para facilitar la lectura desde el celular. Las fotos, los iconos de riesgo y el botón de protocolos de emergencia se generan a partir de los campos de este objeto, de modo que basta con editar el archivo para actualizar el contenido.",
-    "riesgos": ["sismos", "tormenta_polvo", "calor_intenso", "heladas", "tornados", "frio_extremo"]
+    "id": "02_tarapaca",
+    "nombre": "Región de Tarapacá",
+    "imagen": "02_tarapaca.webp",
+    "texto": "En la Región de Tarapacá, la convergencia entre las placas de Nazca y Sudamericana genera sismos frecuentes y de gran magnitud. El terremoto de 8,2 ocurrido en 2014 frente a Iquique recordó que la costa está expuesta a tsunamis, por lo que las rutas de evacuación hacia zonas altas son parte de la vida cotidiana. Aunque el clima es desértico, las lluvias estivales del altiplano pueden activar quebradas secas y provocar crecidas violentas que arrastran barro y rocas hacia poblados y caminos. La combinación de costa sísmica, quebradas y localidades aisladas exige conocer los planes de emergencia.",
+    "riesgos": [
+      "sismos",
+      "tsunami",
+      "inundaciones"
+    ]
+  },
+  {
+    "id": "03_antofagasta",
+    "nombre": "Región de Antofagasta",
+    "imagen": "03_antofagasta.webp",
+    "texto": "La Región de Antofagasta combina uno de los desiertos más áridos del mundo con una costa muy expuesta a terremotos y tsunamis. Los sismos de 1995 y de 2007 dejaron daños importantes en Antofagasta, Mejillones y Tocopilla. Aunque llueve muy poco, los eventos excepcionales pueden ser devastadores: en 1991, un aluvión descendió por las quebradas y arrasó barrios de la ciudad de Antofagasta. Por eso, las quebradas secas no deben usarse como lugar de construcción ni de tránsito cuando hay lluvias en la cordillera. Conocer las zonas seguras y las rutas hacia sectores altos es esencial.",
+    "riesgos": [
+      "sismos",
+      "tsunami",
+      "inundaciones"
+    ]
+  },
+  {
+    "id": "04_atacama",
+    "nombre": "Región de Atacama",
+    "imagen": "04_atacama.webp",
+    "texto": "La Región de Atacama es una de las más áridas del país, pero sus lluvias excepcionales son extremadamente peligrosas. En marzo de 2015, un sistema frontal provocó aluviones e inundaciones que afectaron a Copiapó, Chañaral y otras localidades, arrastrando barro y escombros por quebradas y cauces. La región también está expuesta a terremotos de gran magnitud, como el de 1922, que generó un tsunami en la costa. Debido a la escasa cobertura de vegetación, los flujos de barro avanzan con gran rapidez. Mantener despejados los cauces y evitar construir en sus riberas reduce el daño.",
+    "riesgos": [
+      "inundaciones",
+      "deslizamiento",
+      "sismos",
+      "tsunami"
+    ]
+  },
+  {
+    "id": "05_coquimbo",
+    "nombre": "Región de Coquimbo",
+    "imagen": "05_coquimbo.webp",
+    "texto": "En la Región de Coquimbo, los sismos y tsunamis son la amenaza más importante. El terremoto de magnitud 8,4 de septiembre de 2015, con epicentro cerca de Illapel, generó un tsunami que inundó zonas costeras de Coquimbo y otras localidades, y obligó a una evacuación masiva. El clima semiárido, con años de sequía y calor, también aumenta el estrés sobre la población y los ecosistemas. Además, las lluvias intensas, aunque poco frecuentes, pueden generar crecidas repentinas en quebradas y ríos. Conocer las vías de evacuación de cada caleta y balneario es una medida esencial de protección.",
+    "riesgos": [
+      "sismos",
+      "tsunami",
+      "calor_intenso"
+    ]
+  },
+  {
+    "id": "06_valparaiso",
+    "nombre": "Región de Valparaíso",
+    "imagen": "06_valparaiso.webp",
+    "texto": "La Región de Valparaíso enfrenta sismos de gran magnitud, como los de 1906 y 1985, y tsunamis en su extensa costa. Además, sus cerros poblados y quebradas cubiertas de vegetación seca crean condiciones propicias para incendios que avanzan con rapidez hacia las viviendas. Los incendios de 2014 y 2024 destruyeron barrios completos en Valparaíso y Viña del Mar y dejaron enseñanzas sobre la importancia de las vías de evacuación y de mantener limpios los terrenos. Las laderas empinadas también pueden sufrir deslizamientos durante las lluvias intensas. La preparación familiar y comunitaria es clave para responder a tiempo.",
+    "riesgos": [
+      "sismos",
+      "tsunami",
+      "incendios",
+      "deslizamiento"
+    ]
+  },
+  {
+    "id": "07_metropolitana",
+    "nombre": "Región Metropolitana de Santiago",
+    "imagen": "07_metropolitana.webp",
+    "texto": "La Región Metropolitana de Santiago se ubica en un valle entre la Cordillera de los Andes y la Cordillera de la Costa, donde los sismos son la principal amenaza. La falla de San Ramón, al pie de la cordillera, es una fuente sísmica cercana a zonas urbanas. En verano, las olas de calor y los incendios en la interfaz entre viviendas y vegetación aumentan el peligro. Además, las lluvias intensas en la precordillera pueden provocar crecidas y flujos de barro por quebradas, como ocurrió en Macul en 1993. Con millones de habitantes, la preparación y los planes familiares son esenciales.",
+    "riesgos": [
+      "sismos",
+      "calor_intenso",
+      "incendios",
+      "inundaciones"
+    ]
+  },
+  {
+    "id": "08_ohiggins",
+    "nombre": "Región del Libertador Gral. Bernardo O'Higgins",
+    "imagen": "08_ohiggins.webp",
+    "texto": "La Región del Libertador General Bernardo O'Higgins combina un extenso valle agrícola con una costa expuesta a terremotos y tsunamis, especialmente en localidades como Pichilemu. Tras el terremoto de 2010, fuertes réplicas sacudieron la zona costera y recordaron la actividad sísmica del borde de placas. Durante la primavera, las heladas pueden dañar cultivos y frutales, lo que afecta la economía local. En verano, los incendios forestales y de pastizales se propagan con facilidad en el secano costero, como ocurrió en la temporada de 2017. Conocer las rutas de evacuación es fundamental para quienes viven o visitan la costa.",
+    "riesgos": [
+      "sismos",
+      "tsunami",
+      "heladas",
+      "incendios"
+    ]
+  },
+  {
+    "id": "09_maule",
+    "nombre": "Región del Maule",
+    "imagen": "09_maule.webp",
+    "texto": "La Región del Maule fue una de las zonas más golpeadas por el terremoto y tsunami del 27 de febrero de 2010, cuya zona de ruptura abarcó gran parte de su costa. Localidades como Constitución y Curanipe sufrieron olas destructivas en pocos minutos. En la temporada de 2017, incendios forestales de una magnitud inédita arrasaron miles de hectáreas y destruyeron poblados como Santa Olga. Además, las lluvias intensas de invierno pueden hacer desbordar ríos como el Maule y el Mataquito, inundando campos y caminos rurales. La región combina múltiples amenazas, por lo que la preparación es constante.",
+    "riesgos": [
+      "sismos",
+      "tsunami",
+      "incendios",
+      "inundaciones"
+    ]
+  },
+  {
+    "id": "10_nuble",
+    "nombre": "Región de Ñuble",
+    "imagen": "10_nuble.webp",
+    "texto": "La Región de Ñuble, la más joven del país, arrastra una historia sísmica marcada por el terremoto de 1939, que destruyó Chillán y es considerado uno de los más mortales de Chile. Hoy la amenaza continúa con la actividad del complejo volcánico Nevados de Chillán, que registra explosiones y emisiones de gases y ceniza y obliga a un monitoreo permanente. En verano, los incendios forestales afectan el secano y las zonas rurales, y en invierno las crecidas del río Ñuble y sus afluentes pueden inundar sectores bajos. Estar informado sobre las alertas oficiales es una medida clave.",
+    "riesgos": [
+      "sismos",
+      "erupciones",
+      "incendios",
+      "inundaciones"
+    ]
+  },
+  {
+    "id": "11_biobio",
+    "nombre": "Región del Biobío",
+    "imagen": "11_biobio.webp",
+    "texto": "En la Región del Biobío, los riesgos naturales más críticos son los terremotos y tsunamis. El desastre más devastador del registro reciente fue el megaterremoto y tsunami del 27 de febrero de 2010. Este evento catastrófico generó olas que arrasaron localidades costeras enteras como Dichato y Talcahuano. Las consecuencias incluyeron la lamentable pérdida de vidas humanas, colapso estructural masivo y daños portuarios severos, obligando a replantear las vías de evacuación regionales.",
+    "riesgos": [
+      "sismos",
+      "tsunami",
+      "incendios",
+      "inundaciones"
+    ]
+  },
+  {
+    "id": "12_araucania",
+    "nombre": "Región de La Araucanía",
+    "imagen": "12_araucania.webp",
+    "texto": "La Región de La Araucanía alberga algunos de los volcanes más activos de Chile, como Villarrica, Llaima y Lonquimay. Sus erupciones pueden generar columnas de ceniza, flujos de lava y lahares, que son avalanchas de barro que descienden por los ríos al derretir la nieve. La región también siente los grandes terremotos del sur del país y es afectada por incendios forestales en verano, como los de 2017 y 2023. En invierno, las nevadas en la cordillera pueden aislar caminos y comunidades. Conocer las rutas de evacuación y las alertas volcánicas es esencial para quienes viven cerca.",
+    "riesgos": [
+      "erupciones",
+      "sismos",
+      "incendios",
+      "nevadas"
+    ]
+  },
+  {
+    "id": "13_los_rios",
+    "nombre": "Región de Los Ríos",
+    "imagen": "13_los_rios.webp",
+    "texto": "La Región de Los Ríos conserva la memoria del terremoto de Valdivia de 1960, el de mayor magnitud registrado en el mundo, con 9,5. El sismo y el tsunami posterior transformaron el paisaje de la ciudad y de la costa, donde el mar arrasó localidades. Hoy, la región mantiene señalización y rutas de evacuación en sectores costeros y ribereños. Sus abundantes lluvias y la red de ríos, como el Calle-Calle, pueden provocar inundaciones en invierno. En la cordillera se ubican volcanes activos que exigen vigilancia constante, por lo que informarse antes de una emergencia es vital.",
+    "riesgos": [
+      "sismos",
+      "tsunami",
+      "inundaciones",
+      "erupciones"
+    ]
+  },
+  {
+    "id": "14_los_lagos",
+    "nombre": "Región de Los Lagos",
+    "imagen": "14_los_lagos.webp",
+    "texto": "La Región de Los Lagos está expuesta a volcanes activos, terremotos y tsunamis. El volcán Calbuco entró en erupción en abril de 2015, y el Chaitén lo hizo en 2008, obligando a evacuar poblaciones enteras. El terremoto de 1960 y su tsunami golpearon fuertemente Chiloé y la costa, y en 2016 un sismo volvió a sacudir el archipiélago. En diciembre de 2017, un deslizamiento y flujo de barro destruyó Villa Santa Lucía, en la provincia de Palena. La lluvia intensa y el terreno montañoso favorecen estos eventos, por lo que conocer las zonas seguras es esencial.",
+    "riesgos": [
+      "erupciones",
+      "sismos",
+      "tsunami",
+      "deslizamiento"
+    ]
+  },
+  {
+    "id": "15_aysen",
+    "nombre": "Región de Aysén",
+    "imagen": "15_aysen.webp",
+    "texto": "La Región de Aysén es un territorio de fiordos, glaciares y volcanes con muy baja densidad de población, lo que dificulta la llegada de ayuda. La erupción del volcán Hudson en 1991 cubrió de ceniza amplias zonas de la Patagonia. En 2007, un sismo en el fiordo de Aysén provocó deslizamientos de laderas que generaron olas en el fiordo. El desborde repentino de lagos glaciares, como ocurre en el valle del río Baker, puede causar inundaciones. En invierno, las nevadas intensas cortan la conectividad terrestre, por lo que contar con provisiones y comunicación es fundamental.",
+    "riesgos": [
+      "erupciones",
+      "deslizamiento",
+      "inundaciones",
+      "nevadas"
+    ]
+  },
+  {
+    "id": "16_magallanes",
+    "nombre": "Región de Magallanes",
+    "imagen": "16_magallanes.webp",
+    "texto": "La Región de Magallanes y de la Antártica Chilena enfrenta un clima de frío extremo, con nevadas intensas, heladas y vientos fuertes que pueden mantener aisladas a las comunidades. Las bajas temperaturas y la distancia de los centros poblados hacen que el abastecimiento de alimentos y combustible sea crítico en invierno. Además, la falla Magallanes-Fagnano cruza el extremo sur y ha generado sismos importantes, como el de 1949 en Tierra del Fuego. Contar con calefacción segura, ropa adecuada y provisiones es esencial para enfrentar los meses más duros, cuando las condiciones pueden cambiar rápidamente.",
+    "riesgos": [
+      "nevadas",
+      "frio_extremo",
+      "heladas",
+      "sismos"
+    ]
   }
 ]
