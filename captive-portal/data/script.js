@@ -1,219 +1,122 @@
 'use strict';
 
-/* ==========================================================
-   Diccionario de riesgos (clave = valor en "riesgos" del JSON)
-   icono: emoji nativo o etiqueta <img> local (con loading="lazy")
-   ========================================================== */
+// Paleta térmica: norte cálido -> sur glaciar (orden estricto de las 16 regiones)
+const PALETA = ["#E8D5C4", "#E3CDB8", "#DEC4AC", "#D9BCA0", "#C4C1A4", "#AFBFA2", "#A4B9A7", "#9AB3AC", "#8EACB2", "#86A4B7", "#7CA0BE", "#7097C2", "#6B8EBC", "#6485B3", "#5A78A8", "#4C6899"];
+
+const ic = (id, n) => `<img src="icon-${id}.webp" class="custom-emoji" alt="${n}" loading="lazy">`;
+
 const RIESGOS_CONFIG = {
-  "calor_intenso": { nombre: "Calor Intenso", icono: "🌞" },
-  "deslizamiento": { nombre: "Deslizamiento", icono: "🪨" },
-  "erupciones": { nombre: "Erupciones Volcánicas", icono: "🌋" },
-  "tsunami": { nombre: "Tsunami", icono: "🌊" },
-  "heladas": { nombre: "Heladas", icono: "🧊" },
-  "incendios": { nombre: "Incendios", icono: "🔥" },
-  "inundaciones": { nombre: "Inundaciones", icono: "🌧️" },
-  "nevadas": { nombre: "Nevadas", icono: "❄️" },
-  "sismos": { nombre: "Sismos", icono: '<img src="sismo-icon.webp" class="custom-emoji" alt="Sismos" loading="lazy">' },
-  "tornados": { nombre: "Tornados", icono: "🌪️" },
-  "tormenta_electrica": { nombre: "Tormenta Eléctrica", icono: "🌩️" },
-  "frio_extremo": { nombre: "Frío Extremo", icono: "🥶" },
-  "tormenta_polvo": { nombre: "Tormenta de Polvo", icono: '<img src="polvo-icon.webp" class="custom-emoji" alt="Tormenta de Polvo" loading="lazy">' }
+  calor_intenso:     { nombre: 'Calor intenso',         icono: ic('calor_intenso', 'Calor intenso') },
+  deslizamiento:     { nombre: 'Deslizamiento',         icono: ic('deslizamiento', 'Deslizamiento') },
+  erupciones:        { nombre: 'Erupciones volcánicas', icono: ic('erupciones', 'Erupciones volcánicas') },
+  tsunami:           { nombre: 'Tsunami',               icono: ic('tsunami', 'Tsunami') },
+  heladas:           { nombre: 'Heladas',               icono: ic('heladas', 'Heladas') },
+  incendios:         { nombre: 'Incendios forestales',  icono: ic('incendios', 'Incendios forestales') },
+  inundaciones:      { nombre: 'Inundaciones',          icono: ic('inundaciones', 'Inundaciones') },
+  nevadas:           { nombre: 'Nevadas',               icono: ic('nevadas', 'Nevadas') },
+  sismos:            { nombre: 'Sismos',                icono: ic('sismos', 'Sismos') },
+  tornados:          { nombre: 'Tornados',              icono: ic('tornados', 'Tornados') },
+  tormenta_electrica:{ nombre: 'Tormenta eléctrica',    icono: ic('tormenta_electrica', 'Tormenta eléctrica') },
+  frio_extremo:      { nombre: 'Frío extremo',          icono: ic('frio_extremo', 'Frío extremo') },
+  tormenta_polvo:    { nombre: 'Tormenta de polvo',     icono: ic('tormenta_polvo', 'Tormenta de polvo') },
+  vientos_fuertes:   { nombre: 'Vientos fuertes',       icono: ic('vientos_fuertes', 'Vientos fuertes') },
+  lluvias_intensas:  { nombre: 'Lluvias intensas',      icono: ic('lluvias_intensas', 'Lluvias intensas') }
 };
 
-const UI = {
-  titulo: 'Portal de Información Regional',
-  seleccion: 'Selecciona tu región',
-  senapredTitulo: '🛡️ Recomendaciones SENAPRED',
-  senapredSub: 'Qué hacer ante cada riesgo natural',
-  volverMapa: '← Volver al mapa nacional',
-  botonProtocolos: '⚠️ Ver Protocolos de Emergencia de la Zona',
-  errorCarga: 'No se pudo cargar la información de las regiones. Recarga la página para intentarlo de nuevo.',
-  altImagen: 'Mapa satelital de '
-};
+const $ = s => document.querySelector(s);
+const VISTAS = ['v-dashboard', 'v-detalle', 'v-senapred'];
+let REGIONES = [];
+let interna = false; // true una vez que hubo navegación dentro de la SPA
 
-/* ==========================================================
-   Estado y utilidades
-   ========================================================== */
-const estado = { regiones: [], origenProtocolos: 'dashboard' };  // origen: 'dashboard' | 'region'
-
-const vistas = {
-  dashboard: document.getElementById('vista-dashboard'),
-  region: document.getElementById('vista-region'),
-  protocolos: document.getElementById('vista-protocolos')
-};
-
-function el(tag, clase, texto) {
-  const nodo = document.createElement(tag);
-  if (clase) nodo.className = clase;
-  if (texto !== undefined) nodo.textContent = texto;
-  return nodo;
-}
-
-function boton(clase, alHacerClic) {
-  const b = el('button', clase);
-  b.type = 'button';
-  b.addEventListener('click', alHacerClic);
-  return b;
-}
-
-/* Muestra una vista, oculta las demás y sube al inicio */
-function mostrarVista(nombre) {
-  Object.keys(vistas).forEach(function (clave) {
-    vistas[clave].classList.toggle('activa', clave === nombre);
-  });
+function vista(id) {
+  VISTAS.forEach(v => { $('#' + v).hidden = v !== id; });
   window.scrollTo(0, 0);
 }
 
-/* Icono de un riesgo: emoji nativo (texto) o <img> local definido en RIESGOS_CONFIG */
-function crearIcono(clave) {
-  const cfg = RIESGOS_CONFIG[clave];
-  if (!cfg) return null;
-  const s = el('span', 'icono');
-  s.setAttribute('role', 'img');
-  s.setAttribute('aria-label', cfg.nombre);
-  if (cfg.icono.charAt(0) === '<') {
-    s.innerHTML = cfg.icono;   // constante interna (no viene del usuario); el <img> ya incluye loading="lazy"
-    s.querySelectorAll('img').forEach(function (img) {
-      img.addEventListener('error', function () { img.remove(); });
-    });
+function pintarDashboard() {
+  const grid = $('#grid');
+  grid.innerHTML = '';
+  REGIONES.forEach((r, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'card' + (i >= 14 ? ' claro' : '');
+    b.style.background = PALETA[i];
+    b.textContent = r.nombre;
+    b.addEventListener('click', () => { location.hash = 'region/' + r.id; });
+    grid.appendChild(b);
+  });
+}
+
+function abrirRegion(i) {
+  const r = REGIONES[i];
+  const bar = $('#detalle-bar');
+  bar.style.setProperty('--c', PALETA[i]);
+  bar.classList.toggle('claro', i >= 14);
+  $('#detalle-titulo').textContent = r.nombre;
+
+  const box = $('#detalle-img-box');
+  const img = $('#detalle-img');
+  if (r.imagen) {
+    img.alt = 'Imagen de ' + r.nombre;
+    img.src = r.imagen;
+    box.hidden = false;
   } else {
-    s.textContent = cfg.icono;
+    img.removeAttribute('src');
+    box.hidden = true;
   }
-  return s;
-}
 
-/* Fila de iconos; con etiqueta = chips con nombre (Detalle), sin etiqueta = solo iconos (Dashboard) */
-function crearFilaRiesgos(claves, conEtiqueta) {
-  const fila = el('span', conEtiqueta ? 'riesgos-region' : 'region-iconos');
-  (claves || []).forEach(function (clave) {
-    const icono = crearIcono(clave);
-    if (!icono) { console.warn('Riesgo no definido en el diccionario: ' + clave); return; }
-    if (!conEtiqueta) { fila.appendChild(icono); return; }
-    const chip = el('span', 'chip-riesgo');
-    chip.appendChild(icono);
-    chip.appendChild(el('span', '', RIESGOS_CONFIG[clave].nombre));
-    fila.appendChild(chip);
+  const fila = $('#detalle-riesgos');
+  fila.innerHTML = '';
+  (r.riesgos || []).forEach(id => {
+    const c = RIESGOS_CONFIG[id];
+    if (!c) return;
+    const f = document.createElement('figure');
+    f.innerHTML = c.icono + '<figcaption>' + c.nombre + '</figcaption>';
+    fila.appendChild(f);
   });
-  return fila;
+  fila.hidden = !fila.children.length;
+
+  const t = $('#detalle-texto');
+  t.textContent = r.texto || '';
+  t.hidden = !r.texto;
+
+  $('#detalle-vacio').hidden = !!(r.imagen || r.texto || fila.children.length);
+  vista('v-detalle');
 }
 
-/* ==========================================================
-   Vista 1: Dashboard
-   ========================================================== */
-function renderDashboard(error) {
-  const vista = vistas.dashboard;
-  vista.innerHTML = '';
-
-  const senapred = boton('tarjeta-senapred', function () { abrirProtocolos('dashboard'); });
-  senapred.appendChild(el('span', 'senapred-titulo', UI.senapredTitulo));
-  senapred.appendChild(el('span', 'senapred-sub', UI.senapredSub));
-  vista.appendChild(senapred);
-
-  vista.appendChild(el('h2', 'subtitulo', UI.seleccion));
-
-  const grid = el('div', 'grid-regiones');
-  if (error) {
-    grid.appendChild(el('p', 'mensaje-error', UI.errorCarga));
-  } else {
-    estado.regiones.forEach(function (region) {
-      const tarjeta = boton('tarjeta-region', function () { abrirRegion(region); });
-      tarjeta.appendChild(el('span', 'region-nombre', region.nombre));
-      tarjeta.appendChild(crearFilaRiesgos(region.riesgos, false));
-      grid.appendChild(tarjeta);
-    });
+function ruta() {
+  const h = location.hash.slice(1);
+  if (h === 'senapred') return vista('v-senapred');
+  if (h.startsWith('region/')) {
+    const i = REGIONES.findIndex(r => r.id === h.slice(7));
+    if (i > -1) return abrirRegion(i);
   }
-  vista.appendChild(grid);
+  vista('v-dashboard');
 }
 
-/* ==========================================================
-   Vista 2: Detalle de región
-   ========================================================== */
-function abrirRegion(region) {
-  const vista = vistas.region;
-  vista.innerHTML = '';
-
-  const barra = el('div', 'barra-volver');
-  barra.appendChild(boton('boton-volver', function () { mostrarVista('dashboard'); })).textContent = UI.volverMapa;
-  vista.appendChild(barra);
-
-  vista.appendChild(el('h2', 'titulo-vista', region.nombre));
-
-  // Imagen única (mapa satelital) con lazy loading
-  const img = document.createElement('img');
-  img.setAttribute('loading', 'lazy');   // antes de asignar src
-  img.className = 'mapa-satelital';
-  img.alt = UI.altImagen + region.nombre;
-  img.addEventListener('error', function () { console.warn('Imagen no encontrada: ' + region.imagen); img.remove(); });
-  img.src = region.imagen;
-  vista.appendChild(img);
-
-  vista.appendChild(crearFilaRiesgos(region.riesgos, true));
-  vista.appendChild(el('p', 'texto-region', region.texto));
-  vista.appendChild(boton('boton-accion', function () { abrirProtocolos('region'); })).textContent = UI.botonProtocolos;
-
-  mostrarVista('region');
-}
-
-/* ==========================================================
-   Vista 3: Protocolos SENAPRED (HTML estático + acordeones JS)
-   ========================================================== */
-function fijarAcordeon(item, abierto) {
-  item.classList.toggle('abierto', abierto);
-  item.querySelector('.acordeon-cabecera').setAttribute('aria-expanded', abierto ? 'true' : 'false');
-  item.querySelector('.acordeon-panel').hidden = !abierto;
-}
-
-/* Solo un acordeón abierto a la vez; el abierto se acerca al inicio de la pantalla */
-function alternarAcordeon(item) {
-  const abrir = !item.classList.contains('abierto');
-  vistas.protocolos.querySelectorAll('.acordeon.abierto').forEach(function (a) { fijarAcordeon(a, false); });
-  if (abrir) {
-    fijarAcordeon(item, true);
-    item.scrollIntoView(true);
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-volver]')) {
+    if (interna) history.back(); else location.replace('#');
+    return;
   }
-}
-
-function abrirProtocolos(origen) {
-  estado.origenProtocolos = origen;
-  mostrarVista('protocolos');
-}
-
-function iniciarProtocolos() {
-  // Iconos desde el diccionario en las cabeceras de los acordeones
-  vistas.protocolos.querySelectorAll('[data-icono]').forEach(function (nodo) {
-    const icono = crearIcono(nodo.getAttribute('data-icono'));
-    if (icono) nodo.appendChild(icono);
+  const h = e.target.closest('.acc-head');
+  if (!h) return;
+  const acc = h.parentElement;
+  const abre = !acc.classList.contains('open');
+  document.querySelectorAll('.acc.open').forEach(x => {
+    x.classList.remove('open');
+    x.firstElementChild.setAttribute('aria-expanded', 'false');
   });
-
-  vistas.protocolos.addEventListener('click', function (e) {
-    const cabecera = e.target.closest('.acordeon-cabecera');
-    if (cabecera) alternarAcordeon(cabecera.parentNode);
-  });
-
-  // "Volver atrás": regresa a la Vista 2 o a la Vista 1 según de dónde vino el usuario
-  document.getElementById('btn-volver-protocolos').addEventListener('click', function () {
-    mostrarVista(estado.origenProtocolos === 'region' ? 'region' : 'dashboard');
-  });
-}
-
-/* ==========================================================
-   Inicialización
-   ========================================================== */
-async function iniciar() {
-  document.title = UI.titulo;
-  document.getElementById('titulo-app').textContent = UI.titulo;
-  iniciarProtocolos();
-
-  let error = false;
-  try {
-    const respuesta = await fetch('data.json');
-    if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);
-    estado.regiones = await respuesta.json();
-  } catch (e) {
-    console.error('Error cargando data.json:', e);
-    error = true;
+  if (abre) {
+    acc.classList.add('open');
+    h.setAttribute('aria-expanded', 'true');
   }
-  renderDashboard(error);
-}
+});
 
-iniciar();
+window.addEventListener('hashchange', () => { interna = true; ruta(); });
+
+fetch('data.json')
+  .then(res => { if (!res.ok) throw new Error(res.status); return res.json(); })
+  .then(datos => { REGIONES = datos; pintarDashboard(); })
+  .catch(() => { $('#grid').textContent = 'No se pudieron cargar las regiones. Recarga la página.'; })
+  .finally(ruta);
