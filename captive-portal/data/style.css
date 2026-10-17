@@ -7,6 +7,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:3px solid #1f4e8c;outline-offset:2px}
 
 .wrap{max-width:720px;margin:0 auto;padding:16px 14px 32px}
+#acordeones{padding-left:16px;padding-right:16px}
 .top h1{font-size:1.5rem;line-height:1.2}
 .top p{color:var(--mute);margin:4px 0 14px}
 .btn{display:inline-block;padding:10px 16px;border-radius:10px;background:var(--ink);color:#fff;font-weight:600;text-decoration:none}
@@ -26,10 +27,13 @@ button{font:inherit;color:inherit;cursor:pointer}
 /* Vista 2 */
 #detalle-img{display:block;width:100%;height:auto}
 .riesgos{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:16px 14px}
-.riesgos figure{width:96px;text-align:center;font-size:.8rem;line-height:1.2}
+.risk-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#ffffff;border:1px solid #d1d5db;border-radius:8px;padding:6px;width:70px;cursor:pointer;transition:transform 0.1s ease;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.risk-btn:active{transform:scale(0.94)}
+.risk-btn .custom-emoji{width:42px;height:42px;margin:0 0 4px}
+.risk-name{font-size:0.65rem;color:#334155;font-weight:600;text-align:center;line-height:1.1}
 .custom-emoji{display:block;width:96px;height:96px;object-fit:contain;margin:0 auto 4px}
 .custom-emoji--sm{width:48px;height:48px;margin:0;flex:none}
-.texto{max-width:62ch;margin:0 auto;padding:4px 18px 28px;font-size:1.05rem;line-height:1.65}
+.texto{width:calc(100% - 28px);max-width:62ch;margin:15px auto 28px;padding:20px;border:1.5px solid #94a3b8;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.04);text-align:justify;hyphens:none;color:#334155;font-size:1.05rem;line-height:1.65}
 .vacio{padding:24px 18px;color:var(--mute);text-align:center}
 
 /* Vista 3: acordeones */
@@ -39,8 +43,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .acc.open .acc-head::after{transform:rotate(-135deg)}
 .acc-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s}
 .acc.open .acc-panel{grid-template-rows:1fr}
-.acc-inner{min-height:0;overflow:hidden;padding:0 16px;line-height:1.6}
-.acc.open .acc-inner{padding:4px 16px 16px}
+.acc-inner{min-height:0;overflow:hidden;padding:0 20px;line-height:1.6;transition:padding .25s}
+.acc.open .acc-inner{padding:16px 20px 24px 20px}
 
 @media (min-width:600px){#grid{grid-template-columns:repeat(4,1fr)}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}

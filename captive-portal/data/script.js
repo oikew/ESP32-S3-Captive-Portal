@@ -39,7 +39,7 @@ function pintarDashboard() {
   REGIONES.forEach((r, i) => {
     const b = document.createElement('button');
     b.type = 'button';
-    b.className = 'card' + (i >= 14 ? ' claro' : '');
+    b.className = 'card';
     b.style.background = PALETA[i];
     b.textContent = r.nombre;
     b.addEventListener('click', () => { location.hash = 'region/' + r.id; });
@@ -47,11 +47,15 @@ function pintarDashboard() {
   });
 }
 
+function aclarar(hex, p) {
+  const n = parseInt(hex.slice(1), 16);
+  const m = c => Math.round(c + (255 - c) * p);
+  return 'rgb(' + m(n >> 16) + ',' + m((n >> 8) & 255) + ',' + m(n & 255) + ')';
+}
 function abrirRegion(i) {
   const r = REGIONES[i];
   const bar = $('#detalle-bar');
   bar.style.setProperty('--c', PALETA[i]);
-  bar.classList.toggle('claro', i >= 14);
   $('#detalle-titulo').textContent = r.nombre;
 
   const box = $('#detalle-img-box');
@@ -70,23 +74,46 @@ function abrirRegion(i) {
   (r.riesgos || []).forEach(id => {
     const c = RIESGOS_CONFIG[id];
     if (!c) return;
-    const f = document.createElement('figure');
-    f.innerHTML = c.icono + '<figcaption>' + c.nombre + '</figcaption>';
-    fila.appendChild(f);
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'risk-btn';
+    b.dataset.riesgo = id;
+    b.innerHTML = c.icono + '<span class="risk-name">' + c.nombre + '</span>';
+    fila.appendChild(b);
   });
   fila.hidden = !fila.children.length;
 
   const t = $('#detalle-texto');
   t.textContent = r.texto || '';
+  t.style.backgroundColor = aclarar(PALETA[i], Math.max(0, i - 8) * 0.07);
   t.hidden = !r.texto;
 
   $('#detalle-vacio').hidden = !!(r.imagen || r.texto || fila.children.length);
   vista('v-detalle');
 }
 
+function abrirAcordeon(id) {
+  const img = document.querySelector('#acordeones .acc-head img[src="icon-' + id + '.webp"]');
+  if (!img) return;
+  const head = img.closest('.acc-head');
+  const acc = head.parentElement;
+  document.querySelectorAll('.acc.open').forEach(x => {
+    x.classList.remove('open');
+    x.firstElementChild.setAttribute('aria-expanded', 'false');
+  });
+  acc.classList.add('open');
+  head.setAttribute('aria-expanded', 'true');
+  acc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function ruta() {
   const h = location.hash.slice(1);
-  if (h === 'senapred') return vista('v-senapred');
+  if (h === 'senapred' || h.startsWith('senapred/')) {
+    vista('v-senapred');
+    const id = h.split('/')[1];
+    if (id) abrirAcordeon(id);
+    return;
+  }
   if (h.startsWith('region/')) {
     const i = REGIONES.findIndex(r => r.id === h.slice(7));
     if (i > -1) return abrirRegion(i);
@@ -95,6 +122,11 @@ function ruta() {
 }
 
 document.addEventListener('click', e => {
+  const rb = e.target.closest('.risk-btn');
+  if (rb) {
+    location.hash = 'senapred/' + rb.dataset.riesgo;
+    return;
+  }
   if (e.target.closest('[data-volver]')) {
     if (interna) history.back(); else location.replace('#');
     return;
