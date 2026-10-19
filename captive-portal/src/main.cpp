@@ -15,19 +15,20 @@ static const uint8_t CANALES[3] = {1, 6, 11};
 static const uint8_t AP_CANAL = CANALES[PLACA - 1];
 static const uint8_t AP_MAX_CLIENTES = 10;  // límite de hardware del SoftAP del ESP32-S3
 static const uint16_t DNS_PUERTO = 53;
+#define DIAGNOSTICO 1   // 1 = imprime conexiones, IP asignadas y consultas de detección; 0 = silencio
 
-static const char *const HOST_PORTAL = "192.168.4.1";
-static const char *const URL_PORTAL = "http://192.168.4.1/";
+static const char *const HOST_PORTAL = "4.3.2.1";
+static const char *const URL_PORTAL = "http://4.3.2.1/";
 
-static const IPAddress AP_IP(192, 168, 4, 1);
-static const IPAddress AP_GATEWAY(192, 168, 4, 1);
+// IP en rango público: algunos Samsung no abren el portal con IPs privadas (192.168.x.x).
+static const IPAddress AP_IP(4, 3, 2, 1);
+static const IPAddress AP_GATEWAY(4, 3, 2, 1);
 static const IPAddress AP_MASCARA(255, 255, 255, 0);
 
 DNSServer dnsServer;
 AsyncWebServer server(80);
 // --- Control de inactividad ---
 static const uint32_t LIMITE_INACTIVIDAD_MS = 60000;               // sin latido ni petición
-static const uint32_t ROTACION_MS           = 210000;              // 3 min 30 s conectado
 static const uint8_t  UMBRAL_DESALOJO       = AP_MAX_CLIENTES - 1; // desde aquí se libera un cupo
 
 struct Cliente {
@@ -73,6 +74,21 @@ static void alEventoWiFi(arduino_event_id_t ev, arduino_event_info_t info) {
     if (i >= 0) { clientes[i].ip = info.wifi_ap_staipassigned.ip.addr; clientes[i].visto = ahora; }
   }
   portEXIT_CRITICAL(&mux);
+
+#if DIAGNOSTICO
+  if (ev == ARDUINO_EVENT_WIFI_AP_STACONNECTED) {
+    const uint8_t *m = info.wifi_ap_staconnected.mac;
+    Serial.printf("[WIFI] Conectó %02X:%02X:%02X:%02X:%02X:%02X\n", m[0], m[1], m[2], m[3], m[4], m[5]);
+  } else if (ev == ARDUINO_EVENT_WIFI_AP_STAIPASSIGNED) {
+    const uint8_t *m = info.wifi_ap_staipassigned.mac;
+    Serial.printf("[WIFI] IP asignada %s a %02X:%02X:%02X:%02X:%02X:%02X\n",
+                  IPAddress(info.wifi_ap_staipassigned.ip.addr).toString().c_str(),
+                  m[0], m[1], m[2], m[3], m[4], m[5]);
+  } else if (ev == ARDUINO_EVENT_WIFI_AP_STADISCONNECTED) {
+    const uint8_t *m = info.wifi_ap_stadisconnected.mac;
+    Serial.printf("[WIFI] Se desconectó %02X:%02X:%02X:%02X:%02X:%02X\n", m[0], m[1], m[2], m[3], m[4], m[5]);
+  }
+#endif
 }
 
 static void registrarActividad(AsyncWebServerRequest *request) {
@@ -85,8 +101,8 @@ static void registrarActividad(AsyncWebServerRequest *request) {
 
 static void desalojarSiHayPresion() {
   uint32_t ahora = millis();
-  int n = 0, idxInactivo = -1, idxAntiguo = -1;
-  uint32_t maxInactivo = 0, maxConectado = 0;
+  int n = 0, idxInactivo = -1;
+  uint32_t maxInactivo = 0;
   uint16_t aid = 0;
   const char *motivo = "";
 
@@ -95,9 +111,7 @@ static void desalojarSiHayPresion() {
     if (!clientes[i].uso) continue;
     n++;
     uint32_t sinActividad = ahora - clientes[i].visto;
-    uint32_t tiempoConectado = ahora - clientes[i].conectado;
     if (sinActividad >= LIMITE_INACTIVIDAD_MS && sinActividad > maxInactivo) { maxInactivo = sinActividad; idxInactivo = i; }
-    if (tiempoConectado >= ROTACION_MS && tiempoConectado > maxConectado) { maxConectado = tiempoConectado; idxAntiguo = i; }
   }
   if (n >= UMBRAL_DESALOJO && idxInactivo >= 0) { aid = clientes[idxInactivo].aid; motivo = "inactivo"; }
   portEXIT_CRITICAL(&mux);
@@ -115,11 +129,18 @@ static void desalojarSiHayPresion() {
 // /hotspot-detect.html haría creer al sistema operativo que hay internet y el
 // portal no se abriría automáticamente.
 static void redirigirAlPortal(AsyncWebServerRequest *request) {
+#if DIAGNOSTICO
+  Serial.printf("[PORTAL] %s %s%s desde %s -> redirige\n",
+                request->methodToString(),
+                request->host().c_str(),
+                request->url().c_str(),
+                IPAddress(request->client()->remoteIP()).toString().c_str());
+#endif
   request->redirect(URL_PORTAL);
 }
 
 // Para cualquier ruta inexistente: si la petición llegó con un dominio ajeno
-// (secuestro DNS), se redirige al portal. Si ya está en 192.168.4.1 o pide "/",
+// (secuestro DNS), se redirige al portal. Si ya está en 4.3.2.1 o pide "/",
 // se responde 404 para evitar un bucle de redirecciones (por ejemplo, si
 // index.html no estuviera en LittleFS).
 static void manejarNoEncontrado(AsyncWebServerRequest *request) {
@@ -169,7 +190,7 @@ void setup() {
   esp_wifi_set_inactive_time(WIFI_IF_AP, 60);
   Serial.printf("Placa %d | '%s' | canal %d | máx %d | IP %s\n", PLACA, AP_SSID, AP_CANAL, AP_MAX_CLIENTES, WiFi.softAPIP().toString().c_str());
 
-  // Servidor DNS: cualquier dominio resuelve a 192.168.4.1
+  // Servidor DNS: cualquier dominio resuelve a 4.3.2.1
   dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
   if (!dnsServer.start(DNS_PUERTO, "*", AP_IP)) {
     Serial.println("ERROR: no se pudo iniciar el servidor DNS.");
