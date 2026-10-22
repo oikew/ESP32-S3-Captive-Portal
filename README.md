@@ -13,7 +13,7 @@ Serving a robust, mobile-first Web Application (SPA) with 16 geographical region
 - **Network:** Zero-latency Lazy Loading implemented to prevent Wi-Fi bandwidth bottlenecks.
 
 ## Methodology
-The network topology, hardware selection (ESP32-S3, PSRAM constraints), thermal load management, and JSON data funneling were architected independently. Syntax generation for C++ and JS was AI-assisted under strict embedded-system constraints.
+The network topology, hardware selection (ESP32-S3, PSRAM constraints), thermal load management, and JSON data funneling were architected independently. Syntax generation was AI-assisted under strict embedded-system constraints.
 
 ## Visual Evidence
 <img width="1600" height="900" alt="ESP32-S3" src="https://github.com/user-attachments/assets/f68f01d8-6ba4-4bc3-8136-d9871d53c7bf" />
